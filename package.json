@@ -2,7 +2,8 @@
   "name": "confinig",
   "version": "0.1.0",
   "description": "Application configuration helpers for Node.Js",
-  "main": "index.js",
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "scripts": {
     "build": "tsc",
     "dev-tsc": "tsc -w",
