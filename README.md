@@ -21,7 +21,7 @@ Import `confinit`
 Define a configuration class with one or more section:
 
     export class Section1Config {
-      url: string;
+      url: string = "";
     }
 
     export class Configuration {

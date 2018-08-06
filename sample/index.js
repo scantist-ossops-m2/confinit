@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const confinit = require("../index");
 const path = require("path");
 class Section1Config {
+    constructor() {
+        this.url = "";
+    }
     validate() {
         if (!this.url) {
             throw new Error("Section 1 url not set.");

@@ -2,7 +2,7 @@ import * as confinit from "../index";
 import * as path from "path";
 
 export class Section1Config implements confinit.IConfigSection {
-	url: string;
+	url: string = "";
 
 	validate(): void {
 		if (!this.url) {
