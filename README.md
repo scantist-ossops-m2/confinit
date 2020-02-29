@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/confinit.svg)](https://badge.fury.io/js/confinit)
+
 # confinit
 
 Application configuration helpers for Node.Js
