@@ -75,13 +75,25 @@ export function applyCommandArgs(configuration: any, argv: string[]) {
 
 	debug("Appling command arguments:", parsedArgv);
 
-	if (parsedArgv.config) {
-		const configFile = path.resolve(process.cwd(), parsedArgv.config);
+	const CONFIG_PROP = 'config';
+
+	if (parsedArgv[CONFIG_PROP]) {
+		const configFile = path.resolve(process.cwd(), parsedArgv[CONFIG_PROP]);
 		applyConfigFile(configuration, configFile);
 	}
 
 	for (const key in parsedArgv) {
 		if (!parsedArgv.hasOwnProperty(key)) {
+			continue;
+		}
+
+		if (key.startsWith('_')) {
+			continue;
+		}
+		if (key.endsWith('_')) {
+			continue;
+		}
+		if (key === CONFIG_PROP) {
 			continue;
 		}
 
@@ -95,22 +107,42 @@ export function applyCommandArgs(configuration: any, argv: string[]) {
 }
 
 
-export function setDeepProperty(obj: any, propertyPath: string, value: any): void {
-	const a = splitPath(propertyPath);
-	const n = a.length;
-
-	for (let i = 0; i < n - 1; i++) {
-		const k = a[i];
-
-		if (!(k in obj)) {
-			obj[k] = {};
-		}
-		obj = obj[k];
+export function setDeepProperty(obj: {[key: string]: any}, propertyPath: string, value: any): void {
+	if (!obj) {
+		throw new Error("Invalid object");
+	}
+	if (!propertyPath) {
+		throw new Error("Invalid property path");
 	}
 
+	const pathParts = splitPath(propertyPath);
+	const pathPartsLen = pathParts.length;
 
-	obj[a[n - 1]] = value;
+	for (let i = 0; i < pathPartsLen - 1; i++) {
+		const pathPart = pathParts[i];
+
+		if (!(pathPart in obj)) {
+			setProp(obj, pathPart, {});
+		}
+		obj = getProp(obj, pathPart);
+	}
+
+	setProp(obj, pathParts[pathPartsLen - 1], value);
 	return;
+}
+
+function setProp(obj: {[key: string]: any}, property: string, value: any): void {
+	if (!obj.hasOwnProperty(property)) {
+		throw new Error(`Property '${property}' is not valid`);
+	}
+	obj[property] = value;
+}
+
+function getProp(obj: {[key: string]: any}, property: string): any {
+	if (!obj.hasOwnProperty(property)) {
+		throw new Error(`Property '${property}' is not valid`);
+	}
+	return obj[property];
 }
 
 export function getDeepProperty(obj: any, propertyPath: string): any {
