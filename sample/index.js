@@ -1,4 +1,5 @@
 "use strict";
+// See README.md for details
 Object.defineProperty(exports, "__esModule", { value: true });
 const confinit = require("../index");
 const path = require("path");
@@ -36,11 +37,14 @@ class Configuration {
         if (!env) {
             env = process.env;
         }
+        // Enable config file
         if (env.config) {
             const configFile = path.resolve(process.cwd(), env.config);
             confinit.applyConfigFile(this, configFile);
         }
+        // Enable environment variables
         confinit.applyEnvVariables(this, process.env, "cfg_");
+        // Enable command arguments
         confinit.applyCommandArgs(this, process.argv);
         confinit.validate(this);
     }

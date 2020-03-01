@@ -1,3 +1,5 @@
+// See README.md for details
+
 import * as confinit from "../index";
 import * as path from "path";
 
@@ -37,11 +39,15 @@ export class Configuration {
 		if (!env) {
 			env = process.env;
 		}
+
+		// Enable config file
 		if (env.config) {
 			const configFile = path.resolve(process.cwd(), env.config);
 			confinit.applyConfigFile(this, configFile);
 		}
+		// Enable environment variables
 		confinit.applyEnvVariables(this, process.env, "cfg_");
+		// Enable command arguments
 		confinit.applyCommandArgs(this, process.argv);
 
 		confinit.validate(this);

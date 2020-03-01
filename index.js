@@ -58,12 +58,22 @@ function applyCommandArgs(configuration, argv) {
         return;
     }
     debug("Appling command arguments:", parsedArgv);
-    if (parsedArgv.config) {
-        const configFile = path.resolve(process.cwd(), parsedArgv.config);
+    const CONFIG_PROP = 'config';
+    if (parsedArgv[CONFIG_PROP]) {
+        const configFile = path.resolve(process.cwd(), parsedArgv[CONFIG_PROP]);
         applyConfigFile(configuration, configFile);
     }
     for (const key in parsedArgv) {
         if (!parsedArgv.hasOwnProperty(key)) {
+            continue;
+        }
+        if (key.startsWith('_')) {
+            continue;
+        }
+        if (key.endsWith('_')) {
+            continue;
+        }
+        if (key === CONFIG_PROP) {
             continue;
         }
         const configKey = key
@@ -74,19 +84,37 @@ function applyCommandArgs(configuration, argv) {
 }
 exports.applyCommandArgs = applyCommandArgs;
 function setDeepProperty(obj, propertyPath, value) {
-    const a = splitPath(propertyPath);
-    const n = a.length;
-    for (let i = 0; i < n - 1; i++) {
-        const k = a[i];
-        if (!(k in obj)) {
-            obj[k] = {};
-        }
-        obj = obj[k];
+    if (!obj) {
+        throw new Error("Invalid object");
     }
-    obj[a[n - 1]] = value;
+    if (!propertyPath) {
+        throw new Error("Invalid property path");
+    }
+    const pathParts = splitPath(propertyPath);
+    const pathPartsLen = pathParts.length;
+    for (let i = 0; i < pathPartsLen - 1; i++) {
+        const pathPart = pathParts[i];
+        if (!(pathPart in obj)) {
+            setProp(obj, pathPart, {});
+        }
+        obj = getProp(obj, pathPart);
+    }
+    setProp(obj, pathParts[pathPartsLen - 1], value);
     return;
 }
 exports.setDeepProperty = setDeepProperty;
+function setProp(obj, property, value) {
+    if (!obj.hasOwnProperty(property)) {
+        throw new Error(`Property '${property}' is not valid`);
+    }
+    obj[property] = value;
+}
+function getProp(obj, property) {
+    if (!obj.hasOwnProperty(property)) {
+        throw new Error(`Property '${property}' is not valid`);
+    }
+    return obj[property];
+}
 function getDeepProperty(obj, propertyPath) {
     let ret = obj;
     const a = splitPath(propertyPath);
