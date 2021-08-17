@@ -1,6 +1,6 @@
 {
   "name": "confinit",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Application configuration helpers for Node.Js",
   "main": "./index.js",
   "types": "./index.d.ts",
