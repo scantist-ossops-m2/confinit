@@ -1,6 +1,7 @@
 "use strict";
 // See README.md for details
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Configuration = exports.WebServerConfig = exports.Section1Config = void 0;
 const confinit = require("../index");
 const path = require("path");
 class Section1Config {
